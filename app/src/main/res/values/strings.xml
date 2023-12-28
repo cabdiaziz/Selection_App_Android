@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PracticalApp</string>
+    <string name="titleText">My Name is : </string>
+    <string name="usernameLabel">username</string>
+    <string name="submitBtnText">Submit</string>
+    <string name="sendBtnText">send</string>
+</resources>
