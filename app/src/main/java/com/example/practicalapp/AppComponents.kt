@@ -1,30 +1,28 @@
 package com.example.practicalapp
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,38 +38,56 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+
 
 @Composable
 fun AnimalCard(modifier: Modifier = Modifier, imgSrc: Painter) {
-    Box(
-        contentAlignment = Alignment.Center,
+    var isSelected by remember { mutableStateOf(false) }
+
+    Row(
         modifier = modifier
-            .padding(8.dp)
-            .size(120.dp, 120.dp)
-            .fillMaxSize(1f)
-            .shadow(2.dp, shape = RoundedCornerShape(16.dp))
-            .clickable { }
+            .padding(10.dp)
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .background(Color(0xFFDBD1E1), shape = RoundedCornerShape(10.dp))
-                .size(140.dp)
-                .offset(1.dp, 4.dp)
+            modifier = modifier
+                .padding(8.dp)
+                .size(120.dp, 120.dp)
+                .fillMaxSize(1f)
+                .clip(MaterialTheme.shapes.medium)
+                .shadow(2.dp, shape = RoundedCornerShape(16.dp))
+                .clickable { isSelected = !isSelected }
+                .let {
+                    if (isSelected) {
+                        it.border(4.dp, Color.Green, shape = RoundedCornerShape(16.dp))
+                    } else {
+                        it
+                    }
+                }
+
         ) {
-            Image(
-                painter = imgSrc,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .background(Color(0xFFDBD1E1), shape = RoundedCornerShape(10.dp))
+                    .size(140.dp)
+
+            ) {
+                Image(
+                    painter = imgSrc,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
     }
 }
+
 
 @Composable
 fun TopBar() {
@@ -117,9 +133,8 @@ fun BodyTextView() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun TextInputDesign() {
+fun TextInputDesign(navController: NavController) {
     var textInputValue by remember {
         mutableStateOf("")
     }
@@ -147,5 +162,102 @@ fun TextInputDesign() {
             style = TextStyle(fontSize = 20.sp),
             modifier = Modifier.padding(top = 15.dp, start = 15.dp)
         )
+        GoToDetailsButton(navController = navController, textInputValue)
     }
+}
+
+@Composable
+fun GoToDetailsButton(navController: NavController, name: String) {
+    Column(
+        modifier = Modifier
+            .padding(8.dp),
+        Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                navController.navigate(Screen.Second.withArgs(name))
+            }, modifier = Modifier
+                .padding(8.dp)
+                .clip(CutCornerShape(4.dp))
+        ) {
+            Text(
+                "Go to details Screen",
+                fontSize = 16.sp,
+                color = Color.White
+            )
+        }
+    }
+}
+
+//here start second screen components.
+@Composable
+fun SecondTopBar(imgSrc: Painter, name: String?) {
+    Spacer(modifier = Modifier.height(20.dp))
+    val eyeLoveEmoji = "\uD83D\uDC40"
+    Row(
+        modifier = Modifier
+            .padding(15.dp),
+        Arrangement.SpaceAround
+    ) {
+        Text(
+            "Welcome ${if (name == "") "No Name" else name} $eyeLoveEmoji",
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Medium),
+            modifier = Modifier.padding(top = 12.dp, start = 11.dp)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = imgSrc,
+            contentDescription = null,
+            modifier = Modifier
+                .size(50.dp)
+                .clip(RoundedCornerShape(32.dp)),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+@Composable
+fun SecondScreenBody() {
+    Column(modifier = Modifier.padding(15.dp)) {
+        Text(
+            "Thank you! for sharing some Info",
+            style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Light),
+            modifier = Modifier.padding(12.dp)
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(
+            "You love a horse",
+            style = TextStyle(fontSize = 22.sp),
+            modifier = Modifier.padding(10.dp)
+        )
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun MessageCard() {
+    Box(
+        modifier = Modifier
+            .size(250.dp, 250.dp)
+            .padding(15.dp)
+            .shadow(4.dp, shape = RoundedCornerShape(8.dp))
+            .clip(shape = RoundedCornerShape(8.dp))
+            .fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .background(Color(0xFFDBD1E1), shape = RoundedCornerShape(8.dp))
+                .padding(15.dp)
+                .size(250.dp, 250.dp)
+            ,
+            Alignment.Center,
+        ) {
+            Text(
+                "\"\nHorses are large,\ndomesticated mammals \nknown for their strength\n\"",
+                style = TextStyle(fontSize=18.sp, fontWeight = FontWeight.Bold)
+            )
+        }
+    }
+
 }

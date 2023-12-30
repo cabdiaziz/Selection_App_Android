@@ -35,10 +35,10 @@ class MainActivity : ComponentActivity() {
                 composable(Screen.Home.route) {
                     HomeScreen(navController = navController)
                 }
-                composable(Screen.Second.route + "/{message}" + "/{sender}",
+                composable(Screen.Second.route + "/{name}",
                     arguments = listOf(
-                        navArgument("message") { type = NavType.StringType },
-                        navArgument("sender") { type = NavType.StringType }
+                        navArgument("name") { type = NavType.StringType },
+                        //navArgument("sender") { type = NavType.StringType }
                     )
                 ) { entry ->
                     SecondScreen(
