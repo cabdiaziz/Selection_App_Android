@@ -10,12 +10,11 @@ import androidx.navigation.NavController
 @Composable
 fun HomeScreen(navController: NavController) {
     val bird = painterResource(id = R.drawable.bird)
-
     Column {
         TopBar() //top bar component
         BodyTextView() // text in the body of the home screen.
-        TextInputDesign(navController = navController) //input text design.
+        TextInputDesign() //input text design.
         AnimalCard(imgSrc = bird)
-        //GoToDetailsButton(navController = navController) //go to second screen button.
+        GoToDetailsButton(navController = navController) //go to second screen button.
     }
 }
